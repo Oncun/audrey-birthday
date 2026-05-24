@@ -1,481 +1,748 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <title>Happy Birthday Audrey! 🎉</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>Happy Birthday Audrey 💕</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream:      #FFF6EF;
+    --blush:      #FFC9D4;
+    --blush-soft: #FFE2E8;
+    --rose:       #FF5A8A;
+    --rose-deep:  #E0306E;
+    --coral:      #FF8C5A;
+    --tangerine:  #FFB347;
+    --sun:        #FFD93D;
+    --mint:       #6BE7C1;
+    --sky:        #7AC7FF;
+    --lavender:   #C792FF;
+    --ink:        #2A1A3E;
+    --ink-soft:   #6E5B85;
+    --shadow: 0 30px 60px -20px rgba(224,48,110,0.28), 0 18px 30px -15px rgba(42,26,62,0.18);
+  }
 
-    :root {
-      --pink:   #FF6B9D;
-      --purple: #C77DFF;
-      --yellow: #FFD60A;
-      --coral:  #FF6B6B;
-      --teal:   #4ECDC4;
-      --card-px: 28px; /* card horizontal padding — keep in sync with .card */
-    }
+  *, *::before, *::after { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
-    html { height: 100%; }
+  html, body {
+    margin: 0; padding: 0;
+    min-height: 100%;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-weight: 400;
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    overscroll-behavior: none;
+  }
 
-    body {
-      font-family: 'Nunito', sans-serif;
-      background: linear-gradient(145deg, #FFE4F0 0%, #EFE0FF 50%, #DDF4FF 100%);
-      min-height: 100dvh;
-      -webkit-font-smoothing: antialiased;
-      overflow-x: hidden;
-    }
+  body {
+    background:
+      radial-gradient(ellipse at 15% 0%,  #FFD6E6 0%, transparent 50%),
+      radial-gradient(ellipse at 90% 15%, #FFE8B8 0%, transparent 45%),
+      radial-gradient(ellipse at 5%  95%, #D9C7FF 0%, transparent 45%),
+      radial-gradient(ellipse at 95% 90%, #BDF0E0 0%, transparent 45%),
+      var(--cream);
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
 
-    /* ── Canvas ── */
-    #confetti {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 100;
-    }
+  body::before {
+    content: '';
+    position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background-image:
+      radial-gradient(circle at 12% 22%, var(--sun)       0, var(--sun)       2px, transparent 3px),
+      radial-gradient(circle at 88% 30%, var(--rose)      0, var(--rose)      2px, transparent 3px),
+      radial-gradient(circle at 70% 78%, var(--lavender)  0, var(--lavender)  2px, transparent 3px),
+      radial-gradient(circle at 22% 82%, var(--mint)      0, var(--mint)      2px, transparent 3px),
+      radial-gradient(circle at 50% 8%,  var(--coral)     0, var(--coral)     2px, transparent 3px),
+      radial-gradient(circle at 8%  55%, var(--sky)       0, var(--sky)       2px, transparent 3px),
+      radial-gradient(circle at 92% 60%, var(--tangerine) 0, var(--tangerine) 2px, transparent 3px);
+    opacity: 0.55;
+    animation: twinkle 6s ease-in-out infinite alternate;
+  }
+  @keyframes twinkle { from { opacity: 0.4; } to { opacity: 0.75; } }
 
-    /* ── Page layout ── */
-    .page {
-      min-height: 100dvh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: calc(env(safe-area-inset-top, 16px) + 24px)
-               calc(env(safe-area-inset-right, 0px) + 20px)
-               calc(env(safe-area-inset-bottom, 16px) + 24px)
-               calc(env(safe-area-inset-left, 0px) + 20px);
-    }
+  .serif { font-family: 'Cormorant Garamond', 'Times New Roman', serif; }
 
-    /* ── Card ── */
-    .card {
-      background: #fff;
-      border-radius: 36px;
-      padding: 36px var(--card-px) 32px;
-      max-width: 400px;
-      width: 100%;
-      text-align: center;
-      /* overflow:hidden lets full-bleed photos clip to the card's rounded corners.
-         box-shadow renders outside the border box so it's unaffected. */
-      overflow: hidden;
-      box-shadow:
-        0 4px 6px rgba(0,0,0,0.04),
-        0 12px 40px rgba(199,125,255,0.18),
-        0 24px 60px rgba(255,107,157,0.12);
-      animation: pop-in 0.7s cubic-bezier(0.34,1.56,0.64,1) both;
-    }
+  .app {
+    position: relative; z-index: 1;
+    min-height: 100vh; min-height: 100dvh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 24px;
+    overflow: hidden;
+  }
 
-    @keyframes pop-in {
-      from { opacity:0; transform:scale(0.82) translateY(24px); }
-      to   { opacity:1; transform:scale(1)    translateY(0); }
-    }
+  /* ── Welcome ── */
+  .welcome { text-align: center; max-width: 520px; }
 
-    /* ── Header ── */
-    .emoji-row {
-      font-size: 2.2rem;
-      display: block;
-      margin-bottom: 14px;
-      animation: float 1.6s ease-in-out infinite alternate;
-    }
+  .eyebrow {
+    font-size: 11px; letter-spacing: 0.42em; text-transform: uppercase;
+    color: var(--rose-deep); margin-bottom: 28px; font-weight: 600;
+  }
 
-    @keyframes float {
-      from { transform: translateY(0px) rotate(-2deg); }
-      to   { transform: translateY(-10px) rotate(2deg); }
-    }
+  .welcome h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 400;
+    font-size: clamp(56px, 14vw, 104px);
+    line-height: 0.95; margin: 0 0 4px;
+    color: var(--ink); letter-spacing: -0.01em;
+  }
+  .welcome h1 em {
+    font-style: italic; font-weight: 500;
+    background: linear-gradient(120deg, var(--rose) 0%, var(--coral) 35%, var(--tangerine) 65%, var(--rose-deep) 100%);
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    background-size: 200% 200%;
+    animation: hueShift 6s ease-in-out infinite alternate;
+  }
+  @keyframes hueShift {
+    from { background-position: 0% 50%; }
+    to   { background-position: 100% 50%; }
+  }
 
-    .title {
-      font-family: 'Pacifico', cursive;
-      font-size: clamp(1.55rem, 6.5vw, 2rem);
-      background: linear-gradient(135deg, var(--pink), var(--purple));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      line-height: 1.25;
-      margin-bottom: 2px;
-    }
+  .welcome p.lede {
+    font-size: 16px; line-height: 1.7; color: var(--ink-soft);
+    max-width: 360px; margin: 24px auto 40px;
+  }
 
-    .name {
-      display: block;
-      font-family: 'Pacifico', cursive;
-      font-size: clamp(2rem, 9vw, 2.8rem);
-      background: linear-gradient(135deg, var(--coral), var(--yellow));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 20px;
-    }
+  .rule {
+    display: inline-flex; align-items: center; gap: 14px;
+    color: var(--rose-deep); margin-bottom: 32px;
+  }
+  .rule::before, .rule::after {
+    content: ''; display: block; width: 36px; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--rose), var(--tangerine));
+    border-radius: 2px;
+  }
+  .rule::after { background: linear-gradient(90deg, var(--tangerine), var(--rose), transparent); }
+  .rule span { font-size: 10px; letter-spacing: 0.4em; text-transform: uppercase; font-weight: 700; }
 
-    /* ──────────────────────────────────────────────────────────────
-       Photo carousel
-       Negative horizontal margin = full-bleed (card clips via overflow:hidden)
-    ────────────────────────────────────────────────────────────── */
-    .strip-wrap {
-      margin: 0 calc(-1 * var(--card-px)) 0;
-    }
+  /* ── Buttons ── */
+  .btn {
+    appearance: none; border: none;
+    background: linear-gradient(120deg, var(--rose) 0%, var(--coral) 50%, var(--tangerine) 100%);
+    background-size: 200% 200%;
+    color: #fff;
+    padding: 20px 40px; border-radius: 999px;
+    font-family: 'Inter', sans-serif; font-size: 13px;
+    letter-spacing: 0.22em; text-transform: uppercase; font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.4s cubic-bezier(.2,.8,.2,1), box-shadow 0.4s;
+    box-shadow: 0 14px 36px -10px rgba(224,48,110,0.55), 0 6px 16px -6px rgba(255,140,90,0.45);
+    display: inline-flex; align-items: center; gap: 12px;
+    animation: btnHue 5s ease-in-out infinite alternate;
+    touch-action: manipulation;
+  }
+  @keyframes btnHue {
+    from { background-position: 0% 50%; }
+    to   { background-position: 100% 50%; }
+  }
+  .btn:hover  { transform: translateY(-3px) scale(1.02); }
+  .btn:active { transform: translateY(0) scale(0.96); }
+  .btn.ghost {
+    background: #fff; color: var(--rose-deep);
+    border: 1.5px solid var(--rose); animation: none;
+    box-shadow: 0 6px 18px -8px rgba(224,48,110,0.3);
+  }
+  .btn.ghost:hover { background: var(--blush-soft); }
 
-    .strip {
-      display: flex;
-      overflow-x: scroll;
-      scroll-snap-type: x mandatory;
-      -webkit-overflow-scrolling: touch; /* momentum scroll on older iOS */
-      overscroll-behavior-x: contain;
-      scrollbar-width: none;
-    }
-    .strip::-webkit-scrollbar { display: none; }
+  /* ── Heart burst ── */
+  .heart-burst { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 60; }
+  .float-heart {
+    position: absolute; animation: floatUp 4s cubic-bezier(.2,.7,.4,1) forwards;
+    opacity: 0; will-change: transform, opacity;
+    filter: drop-shadow(0 4px 8px rgba(224,48,110,0.25));
+  }
+  @keyframes floatUp {
+    0%   { transform: translate3d(0, 20vh, 0) scale(0.4) rotate(var(--r, -10deg)); opacity: 0; }
+    15%  { opacity: 1; }
+    100% { transform: translate3d(var(--dx, 0), -60vh, 0) scale(1) rotate(var(--r, 15deg)); opacity: 0; }
+  }
 
-    /* Each slide is exactly as wide as the strip */
-    .slide {
-      flex: 0 0 100%;
-      scroll-snap-align: start;
-      position: relative;
-    }
+  /* ── Photo deck ── */
+  .deck-stage {
+    position: relative; width: 100%;
+    max-width: 360px; height: 520px;
+    margin: 0 auto; user-select: none;
+  }
+  @media (min-width: 720px) { .deck-stage { max-width: 400px; height: 560px; } }
+  @media (max-width: 380px) { .deck-stage { height: 460px; } }
 
-    .photo-box {
-      position: relative;
-      aspect-ratio: 4 / 5;
-      background: linear-gradient(135deg, #FFE4F0, #EFE0FF);
-      overflow: hidden;
-    }
+  .deck-header { text-align: center; margin-bottom: 20px; }
+  .deck-header h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 400; font-size: 34px; margin: 6px 0 4px; color: var(--ink);
+  }
+  .deck-counter { font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--ink-soft); }
 
-    .photo-box img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
+  .card {
+    position: absolute; inset: 0;
+    border-radius: 28px;
+    background: var(--cream);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    cursor: grab; will-change: transform;
+    transform-origin: center 110%;
+    touch-action: none;
+  }
+  .card.grabbing { cursor: grabbing; }
 
-    /* Placeholder shown when image fails to load */
-    .photo-missing {
-      display: none;
-      position: absolute;
-      inset: 0;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      background: linear-gradient(135deg, #FFE4F0, #EFE0FF);
-    }
-    .photo-missing .pm-icon  { font-size: 2.6rem; }
-    .photo-missing .pm-label {
-      font-size: 0.68rem;
-      font-weight: 900;
-      color: #bbb;
-      letter-spacing: 0.07em;
-      text-transform: uppercase;
-    }
+  /* vivid gradient backgrounds cycling per card */
+  .deck-stage .card:nth-child(4n+1) .card-bg { background: linear-gradient(160deg, #FFB3C9 0%, #FF6F91 60%, #E0306E 100%); }
+  .deck-stage .card:nth-child(4n+2) .card-bg { background: linear-gradient(160deg, #FFE5A3 0%, #FFB347 55%, #FF7A45 100%); }
+  .deck-stage .card:nth-child(4n+3) .card-bg { background: linear-gradient(160deg, #C4F0DE 0%, #6BE7C1 55%, #2DBA98 100%); }
+  .deck-stage .card:nth-child(4n)   .card-bg { background: linear-gradient(160deg, #D9C7FF 0%, #B589FF 55%, #7B4DFF 100%); }
 
-    /* Emoji sticker overlaid on bottom-right of each photo */
-    .sticker {
-      position: absolute;
-      bottom: 14px;
-      right: 16px;
-      font-size: 2rem;
-      pointer-events: none;
-      filter: drop-shadow(0 2px 6px rgba(0,0,0,0.25));
-      line-height: 1;
-    }
+  .card-bg {
+    position: absolute; inset: 0;
+    overflow: hidden;
+  }
+  .card-bg::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(135deg,
+      rgba(255,255,255,0.18) 0, rgba(255,255,255,0.18) 14px,
+      rgba(255,255,255,0)    14px, rgba(255,255,255,0)  28px);
+    pointer-events: none; z-index: 1;
+  }
+  .card-bg img {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%; object-fit: cover; display: block;
+    z-index: 2;
+  }
+  .card-bg .photo-err {
+    position: absolute; inset: 0; z-index: 3;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .card-bg .photo-err span {
+    font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 600;
+    background: rgba(255,255,255,0.92); padding: 10px 16px; border-radius: 999px;
+    backdrop-filter: blur(4px); box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    color: var(--ink);
+  }
 
-    /* ── Dots ── */
-    .dots-row {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 7px;
-      padding: 14px var(--card-px) 4px;
-    }
+  .card-caption {
+    position: absolute; left: 0; right: 0; bottom: 0;
+    padding: 70px 24px 26px;
+    background: linear-gradient(to top, rgba(42,26,62,0.85) 0%, rgba(42,26,62,0.4) 60%, transparent 100%);
+    color: #fff; z-index: 10;
+  }
+  .card-caption .num { font-size: 10px; letter-spacing: 0.36em; text-transform: uppercase; opacity: 0.85; margin-bottom: 6px; }
+  .card-caption .text { font-family: 'Cormorant Garamond', serif; font-size: 22px; line-height: 1.25; font-weight: 400; }
 
-    .dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #E6D4FF;
-      transition: background 0.25s ease, transform 0.25s ease;
-      flex-shrink: 0;
-    }
+  .stamp {
+    position: absolute; top: 32px; padding: 8px 18px;
+    border: 2px solid currentColor; border-radius: 8px;
+    font-size: 14px; letter-spacing: 0.3em; text-transform: uppercase; font-weight: 600;
+    opacity: 0; pointer-events: none; z-index: 10;
+  }
+  .stamp.like { right: 24px; color: var(--mint);  background: rgba(0,0,0,0.35); transform: rotate(12deg); }
+  .stamp.nope { left: 24px;  color: var(--rose);  background: rgba(0,0,0,0.35); transform: rotate(-12deg); }
 
-    .dot.active {
-      background: var(--purple);
-      transform: scale(1.45);
-    }
+  /* ── Deck controls ── */
+  .deck-controls { display: flex; gap: 18px; justify-content: center; margin-top: 24px; }
+  .control-btn {
+    width: 58px; height: 58px; border-radius: 50%;
+    border: 2px solid var(--lavender); background: #fff; color: var(--lavender);
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer; touch-action: manipulation;
+    transition: transform 0.25s cubic-bezier(.2,.8,.2,1), box-shadow 0.25s;
+    box-shadow: 0 8px 18px -6px rgba(199,146,255,0.45);
+  }
+  .control-btn:hover  { transform: translateY(-3px) scale(1.05); }
+  .control-btn:active { transform: scale(0.94); }
+  .control-btn:first-child { border-color: var(--sky);       color: var(--sky);       box-shadow: 0 8px 18px -6px rgba(122,199,255,0.5); }
+  .control-btn:last-child  { border-color: var(--tangerine); color: var(--tangerine); box-shadow: 0 8px 18px -6px rgba(255,179,71,0.5); }
+  .control-btn.heart {
+    background: linear-gradient(135deg, var(--rose) 0%, var(--coral) 100%);
+    color: #fff; border-color: transparent;
+    width: 68px; height: 68px;
+    box-shadow: 0 12px 28px -8px rgba(224,48,110,0.55);
+  }
+  .control-btn svg { width: 22px; height: 22px; }
+  .control-btn:disabled { opacity: 0.4; pointer-events: none; }
 
-    /* Swipe hint text — fades out after first swipe */
-    .swipe-hint {
-      font-size: 0.68rem;
-      font-weight: 900;
-      letter-spacing: 0.1em;
-      color: #ccc;
-      text-transform: uppercase;
-      padding: 8px 0 0;
-      transition: opacity 0.5s ease;
-    }
+  .progress-track {
+    height: 2px; border-radius: 2px; margin: 20px auto 0;
+    max-width: 360px; overflow: hidden;
+    background: rgba(42,26,62,0.08);
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--rose) 0%, var(--coral) 40%, var(--tangerine) 70%, var(--sun) 100%);
+    transition: width 0.5s cubic-bezier(.2,.8,.2,1);
+    border-radius: 2px;
+  }
 
-    /* ── Message ── */
-    .message {
-      font-size: 0.97rem;
-      line-height: 1.75;
-      color: #555;
-      font-weight: 700;
-      margin: 24px 0 28px;
-    }
+  /* ── Letter ── */
+  .letter-wrap { max-width: 640px; width: 100%; margin: 0 auto; padding: 16px; }
+  .letter {
+    background: #fff; border-radius: 24px; padding: 56px 36px;
+    box-shadow: var(--shadow); position: relative; overflow: hidden;
+  }
+  .letter::after {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 8px;
+    background: linear-gradient(90deg, var(--rose) 0%, var(--coral) 25%, var(--tangerine) 50%, var(--sun) 65%, var(--mint) 80%, var(--lavender) 100%);
+  }
+  .letter::before {
+    content: ''; position: absolute; inset: 18px;
+    border: 1.5px dashed rgba(255,90,138,0.3); border-radius: 14px; pointer-events: none;
+  }
+  @media (min-width: 720px) { .letter { padding: 72px 64px; } }
+  @media (max-width: 380px) { .letter { padding: 44px 24px; } }
 
-    .message .pop { color: var(--pink); }
+  .letter-header { text-align: center; margin-bottom: 32px; }
+  .letter-date { font-size: 11px; letter-spacing: 0.36em; text-transform: uppercase; color: var(--rose-deep); font-weight: 700; margin-bottom: 14px; }
+  .letter h2 {
+    font-family: 'Cormorant Garamond', serif; font-weight: 400;
+    font-size: clamp(40px, 9vw, 64px); line-height: 1; margin: 0; color: var(--ink);
+  }
+  .letter h2 em {
+    font-style: italic; font-weight: 500;
+    background: linear-gradient(120deg, var(--rose) 0%, var(--coral) 50%, var(--tangerine) 100%);
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .letter-body {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px; line-height: 1.7; color: var(--ink); text-align: left;
+  }
+  @media (min-width: 720px) { .letter-body { font-size: 22px; line-height: 1.75; } }
+  .letter-body p {
+    margin: 0 0 1.1em;
+    opacity: 0; transform: translateY(12px);
+    animation: fadeUp 1.1s cubic-bezier(.2,.7,.2,1) forwards;
+  }
+  .letter-body p.salutation { font-style: italic; color: var(--rose-deep); }
+  .letter-body p.signoff    { margin-top: 1.6em; font-style: italic; }
+  .letter-body p.name       { font-size: 28px; margin-top: 0; color: var(--rose-deep); }
+  @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
 
-    /* ── Confetti button ── */
-    .burst-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: linear-gradient(135deg, var(--pink), var(--purple));
-      color: #fff;
-      border: none;
-      border-radius: 50px;
-      padding: 15px 30px;
-      font-family: 'Nunito', sans-serif;
-      font-size: 1rem;
-      font-weight: 900;
-      cursor: pointer;
-      box-shadow: 0 6px 22px rgba(199,125,255,0.45);
-      -webkit-tap-highlight-color: transparent;
-      touch-action: manipulation;
-      transition: transform 0.12s ease, box-shadow 0.12s ease;
-      user-select: none;
-    }
+  /* ── Music toggle ── */
+  .music-toggle {
+    position: fixed; top: 18px; right: 18px; z-index: 50;
+    width: 46px; height: 46px; border-radius: 50%;
+    border: 2px solid var(--rose); background: #fff; color: var(--rose);
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer; touch-action: manipulation;
+    transition: transform 0.25s, background 0.2s;
+    box-shadow: 0 6px 16px -4px rgba(224,48,110,0.35);
+  }
+  .music-toggle:hover { transform: scale(1.05); }
+  .music-toggle svg { width: 18px; height: 18px; }
+  .music-toggle .pulse {
+    position: absolute; inset: -2px; border-radius: 50%;
+    border: 1.5px solid var(--rose); opacity: 0; pointer-events: none;
+  }
+  .music-toggle.playing .pulse { animation: pulse 2.2s ease-out infinite; }
+  @keyframes pulse {
+    0%   { transform: scale(0.9); opacity: 0.7; }
+    100% { transform: scale(1.4); opacity: 0; }
+  }
 
-    .burst-btn:active {
-      transform: scale(0.93);
-      box-shadow: 0 3px 10px rgba(199,125,255,0.3);
-    }
+  /* ── Step dots ── */
+  .step-dots {
+    position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%);
+    display: flex; gap: 10px; z-index: 50;
+  }
+  .step-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: rgba(42,26,62,0.18);
+    transition: background 0.3s, transform 0.3s;
+  }
+  .step-dot.active {
+    background: linear-gradient(135deg, var(--rose), var(--tangerine));
+    transform: scale(1.4);
+    box-shadow: 0 0 0 4px rgba(255,90,138,0.15);
+  }
 
-    /* ── Footer ── */
-    .footer-emojis {
-      margin-top: 22px;
-      font-size: 1.35rem;
-      letter-spacing: 0.18em;
-    }
-  </style>
+  /* ── Section transitions ── */
+  .section { animation: sectionIn 0.9s cubic-bezier(.2,.7,.2,1) both; width: 100%; display: flex; flex-direction: column; align-items: center; }
+  @keyframes sectionIn {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .hint { font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--rose-deep); margin-top: 16px; opacity: 0.7; font-weight: 600; }
+</style>
 </head>
 <body>
+<div id="root"></div>
 
-<canvas id="confetti"></canvas>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></script>
 
-<div class="page">
-  <div class="card">
+<script type="text/babel">
+  const { useState, useRef, useEffect, useCallback } = React;
 
-    <span class="emoji-row">🎂 🎉 🥳</span>
-    <h1 class="title">Happy Birthday</h1>
-    <span class="name">Audrey!</span>
+  /* ── CONFIG ─────────────────────────────────────────────────── */
+  const GF_NAME   = "Audrey";
+  const SIGNED_BY = "Yours, always ❤️";
+  const MUSIC_SRC = ""; // set to "song.mp3" to show the music button
 
-    <!-- ── Photo carousel ──────────────────────────────────────────
-         Edit PHOTOS in the <script> below to add your images.
-         Name your files photo1.jpg, photo2.jpg … and drop them
-         in the same folder as this file.
-    ─────────────────────────────────────────────────────────────── -->
-    <div class="strip-wrap">
-      <div class="strip" id="strip">
-        <!-- slides injected by JS -->
-      </div>
-      <div class="dots-row">
-        <div id="dots"></div>
-        <!-- dots injected by JS -->
-      </div>
-      <div class="swipe-hint" id="swipeHint">swipe &rsaquo;</div>
-    </div>
-
-    <!-- ── Message ────────────────────────────────────────────────
-         Rewrite anything here — it's just HTML text!
-    ─────────────────────────────────────────────────────────────── -->
-    <p class="message">
-      Today is all about you —<br>
-      the most amazing person I know. 🌟<br><br>
-      Wishing you a day full of<br>
-      <span class="pop">laughter, love &amp; cake.</span> 🍰<br><br>
-      I love you so much! ❤️
-    </p>
-
-    <!-- ontouchstart="" is needed for :active states to fire on iOS Safari -->
-    <button class="burst-btn" onclick="burst()" ontouchstart="">
-      🎊 Pop Confetti!
-    </button>
-
-    <div class="footer-emojis">🌸 🦋 💖 ✨ 🌈</div>
-
-  </div>
-</div>
-
-<script>
-  /* ── ADD YOUR PHOTOS HERE ──────────────────────────────────────
-     Put the image files in the same folder as index.html.
-     Add or remove objects — as many as you like.
-     src   = filename of the image
-     emoji = sticker shown in the bottom-right corner of the photo
-  ────────────────────────────────────────────────────────────── */
   const PHOTOS = [
-    { src: 'FACD82AE-0EDC-4106-9078-7FB40F8A7505.JPG',           emoji: '💕' },
-    { src: '2946725C-58B9-4C16-BB75-BC1CDEA00D6D_4_5005_c.jpeg', emoji: '🌸' },
-    { src: '2B338E7F-D798-49C8-A6CC-9FF66EE1C384_4_5005_c.jpeg', emoji: '✨' },
-    { src: 'A6BEF829-3FEA-47E8-8D57-161945C04053_4_5005_c.jpeg', emoji: '💫' },
-    { src: '62DB4D9E-D9A2-4639-917F-4738606B6C94.JPG',            emoji: '🥰' },
-    { src: '4CE6361B-DA1F-4853-94DE-2A37601D021C.JPG',            emoji: '💖' },
-    { src: '09B37399-61C0-49FF-8D8D-2945BFC3DEBC.JPG',            emoji: '🌟' },
-    { src: 'BBD46CAB-7996-4083-8E55-73EAB6BA8111.JPG',            emoji: '🎀' },
-    { src: '980ADCE6-776B-41CC-B975-89C2FC4B4CE2.JPG',            emoji: '🦋' },
-    { src: '341B02D7-F9FA-42D0-861F-B5DCA92482BB.JPG',            emoji: '🎉' },
-    { src: 'IMG_2628.JPG',   emoji: '💝' },
-    { src: 'IMG_7742.jpeg',  emoji: '🌺' },
-    { src: 'IMG_7776.jpeg',  emoji: '🎊' },
-    { src: 'IMG_7778.jpeg',  emoji: '💗' },
-    { src: 'IMG_7907.jpeg',  emoji: '🌈' },
-    { src: 'IMG_9009.jpeg',  emoji: '💓' },
-    { src: 'IMG_9249.jpeg',  emoji: '🥳' },
-    { src: 'IMG_9424.jpeg',  emoji: '💞' },
-    { src: 'IMG_9448.jpeg',  emoji: '🌷' },
+    { src: "FACD82AE-0EDC-4106-9078-7FB40F8A7505.JPG",           caption: "The first time I knew." },
+    { src: "2946725C-58B9-4C16-BB75-BC1CDEA00D6D_4_5005_c.jpeg", caption: "Golden hour was made for you." },
+    { src: "2B338E7F-D798-49C8-A6CC-9FF66EE1C384_4_5005_c.jpeg", caption: "Your smile, my favorite view." },
+    { src: "A6BEF829-3FEA-47E8-8D57-161945C04053_4_5005_c.jpeg", caption: "Every moment with you is a gift." },
+    { src: "62DB4D9E-D9A2-4639-917F-4738606B6C94.JPG",            caption: "Valentine's, and you made it perfect." },
+    { src: "4CE6361B-DA1F-4853-94DE-2A37601D021C.JPG",            caption: "Just the two of us." },
+    { src: "09B37399-61C0-49FF-8D8D-2945BFC3DEBC.JPG",            caption: "Memories I'll keep forever." },
+    { src: "BBD46CAB-7996-4083-8E55-73EAB6BA8111.JPG",            caption: "The best days are the ones with you." },
+    { src: "980ADCE6-776B-41CC-B975-89C2FC4B4CE2.JPG",            caption: "Adventure suits you." },
+    { src: "341B02D7-F9FA-42D0-861F-B5DCA92482BB.JPG",            caption: "Here's to a thousand more." },
+    { src: "IMG_2628.JPG",   caption: "Laughing with you — my favorite sound." },
+    { src: "IMG_7742.jpeg",  caption: "Quiet moments, the biggest feelings." },
+    { src: "IMG_7776.jpeg",  caption: "Wherever we are, it's home." },
+    { src: "IMG_7778.jpeg",  caption: "You make ordinary days extraordinary." },
+    { src: "IMG_7907.jpeg",  caption: "Coffee dates that last forever." },
+    { src: "IMG_9009.jpeg",  caption: "Dancing in the kitchen." },
+    { src: "IMG_9249.jpeg",  caption: "Sunday mornings are ours." },
+    { src: "IMG_9424.jpeg",  caption: "Australia, with you by my side." },
+    { src: "IMG_9448.jpeg",  caption: "The trip we'll never stop talking about." },
   ];
 
-
-  /* ── Build carousel ─────────────────────────────────────────── */
-  const strip   = document.getElementById('strip');
-  const dotsEl  = document.getElementById('dots');
-  const hint    = document.getElementById('swipeHint');
-
-  PHOTOS.forEach((p, i) => {
-    // Slide
-    const slide = document.createElement('div');
-    slide.className = 'slide';
-
-    const box = document.createElement('div');
-    box.className = 'photo-box';
-
-    const img = document.createElement('img');
-    img.src = p.src;
-    img.alt = `Photo ${i + 1}`;
-    img.loading = i === 0 ? 'eager' : 'lazy';
-    img.onerror = () => {
-      img.style.display = 'none';
-      missing.style.display = 'flex';
-    };
-
-    const missing = document.createElement('div');
-    missing.className = 'photo-missing';
-    missing.innerHTML = `<span class="pm-icon">📸</span><span class="pm-label">${p.src}</span>`;
-
-    const sticker = document.createElement('span');
-    sticker.className = 'sticker';
-    sticker.textContent = p.emoji;
-
-    box.append(img, missing, sticker);
-    slide.append(box);
-    strip.append(slide);
-
-    // Dot
-    const dot = document.createElement('span');
-    dot.className = 'dot' + (i === 0 ? ' active' : '');
-    dotsEl.append(dot);
-  });
-
-  const dots = dotsEl.querySelectorAll('.dot');
-
-  // Update active dot on scroll
-  strip.addEventListener('scroll', () => {
-    const idx = Math.round(strip.scrollLeft / strip.clientWidth);
-    dots.forEach((d, i) => d.classList.toggle('active', i === idx));
-  }, { passive: true });
-
-  // Hide swipe hint after first swipe
-  strip.addEventListener('scroll', () => {
-    hint.style.opacity = '0';
-  }, { once: true, passive: true });
-
-  // Nudge animation: peek right then snap back to hint there's more
-  if (PHOTOS.length > 1) {
-    setTimeout(() => {
-      strip.scrollTo({ left: 48, behavior: 'smooth' });
-      setTimeout(() => strip.scrollTo({ left: 0, behavior: 'smooth' }), 500);
-    }, 1100); // after card entrance animation
-  }
-
-
-  /* ── Confetti engine ─────────────────────────────────────────── */
-  const canvas = document.getElementById('confetti');
-  const ctx    = canvas.getContext('2d');
-  let   parts  = [];
-  let   raf    = null;
-
-  const COLORS = [
-    '#FF6B9D','#C77DFF','#FFD60A',
-    '#FF6B6B','#4ECDC4','#FF9F43','#A29BFE',
+  const LETTER = [
+    { className: "salutation", text: `My dearest ${GF_NAME},` },
+    { text: "Happy birthday. I've been trying for weeks to find the right words, and I've come to terms with the fact that no sentence will ever quite hold what you are to me. So I'll just try." },
+    { text: "You are the softest part of my day and the bravest part of my life. You make ordinary mornings feel rare, and rare moments feel like ours alone. I notice you in everything — the songs that suddenly mean something, the small kindnesses I'd never have learned without you." },
+    { text: "Today the whole world should slow down for you. The light should land a little gentler. Every person you meet should somehow know how lucky they are to share a day with you." },
+    { text: "Thank you for choosing me, again and again. For your patience, your laughter, your wild and tender heart. I will spend a very long time trying to deserve it." },
+    { className: "signoff", text: "Happy birthday, my love. Here's to this year, and to every one after." },
+    { className: "name", text: SIGNED_BY },
   ];
+  /* ── END CONFIG ─────────────────────────────────────────────── */
 
-  function resize() {
-    canvas.width  = window.innerWidth;
-    canvas.height = window.innerHeight;
+
+  /* ── Floating confetti burst ── */
+  function HeartBurst({ trigger }) {
+    const [bits, setBits] = useState([]);
+    const GLYPHS = ["♥","♥","♥","★","✦","✿","●","✸"];
+    const COLORS = ["#FF5A8A","#E0306E","#FF8C5A","#FFB347","#FFD93D","#6BE7C1","#7AC7FF","#C792FF"];
+
+    useEffect(() => {
+      if (!trigger) return;
+      const next = Array.from({ length: 42 }, (_, i) => ({
+        id: `${trigger}-${i}`,
+        left:  Math.random() * 100,
+        dx:    (Math.random() - 0.5) * 320,
+        r:     (Math.random() - 0.5) * 90,
+        delay: Math.random() * 1.0,
+        scale: 0.5 + Math.random() * 1.1,
+        glyph: GLYPHS[Math.floor(Math.random() * GLYPHS.length)],
+        color: COLORS[Math.floor(Math.random() * COLORS.length)],
+      }));
+      setBits(next);
+      const t = setTimeout(() => setBits([]), 5500);
+      return () => clearTimeout(t);
+    }, [trigger]);
+
+    return (
+      <div className="heart-burst">
+        {bits.map(h => (
+          <span
+            key={h.id}
+            className="float-heart"
+            style={{
+              left: `${h.left}%`, bottom: 0,
+              animationDelay: `${h.delay}s`,
+              fontSize: `${22 * h.scale}px`,
+              color: h.color,
+              "--dx": `${h.dx}px`,
+              "--r":  `${h.r}deg`,
+            }}
+          >{h.glyph}</span>
+        ))}
+      </div>
+    );
   }
-  resize();
-  window.addEventListener('resize', resize);
 
-  function rand(lo, hi) { return lo + Math.random() * (hi - lo); }
 
-  function mkParticle(x, y) {
-    return {
-      x, y,
-      vx:       rand(-5, 5),
-      vy:       rand(-14, -5),
-      size:     rand(7, 13),
-      color:    COLORS[Math.floor(Math.random() * COLORS.length)],
-      shape:    Math.random() > 0.45 ? 'rect' : 'circle',
-      rot:      rand(0, Math.PI * 2),
-      rotSpeed: rand(-0.18, 0.18),
-      gravity:  0.38,
-      drag:     0.98,
-      life:     1,
-      fade:     rand(0.012, 0.022),
+  /* ── Single swipeable photo card ── */
+  function PhotoCard({ photo, index, total, isTop, onSwipe, offset = 0 }) {
+    const [drag, setDrag]       = useState({ x: 0, y: 0, rot: 0 });
+    const [grabbing, setGrabbing] = useState(false);
+    const [exiting, setExiting] = useState(null);
+    const [imgFailed, setImgFailed] = useState(false);
+    const startRef = useRef(null);
+
+    const handleStart = (e) => {
+      if (!isTop) return;
+      const p = e.touches ? e.touches[0] : e;
+      startRef.current = { x: p.clientX, y: p.clientY };
+      setGrabbing(true);
     };
+    const handleMove = (e) => {
+      if (!startRef.current || !isTop) return;
+      const p = e.touches ? e.touches[0] : e;
+      const dx = p.clientX - startRef.current.x;
+      const dy = p.clientY - startRef.current.y;
+      setDrag({ x: dx, y: dy * 0.4, rot: dx * 0.06 });
+    };
+    const handleEnd = () => {
+      if (!startRef.current || !isTop) return;
+      startRef.current = null;
+      setGrabbing(false);
+      if (drag.x >  110) triggerExit("right");
+      else if (drag.x < -110) triggerExit("left");
+      else setDrag({ x: 0, y: 0, rot: 0 });
+    };
+    const triggerExit = (dir) => {
+      setExiting(dir);
+      setTimeout(() => onSwipe(dir), 320);
+    };
+
+    useEffect(() => {
+      if (isTop) window.__triggerSwipe = triggerExit;
+    });
+
+    const stackOffset  = offset * 10;
+    const stackScale   = 1 - offset * 0.04;
+    const stackOpacity = offset > 2 ? 0 : 1;
+
+    let transform;
+    if      (exiting === "right") transform = `translate3d(120vw, ${drag.y}px, 0) rotate(28deg)`;
+    else if (exiting === "left")  transform = `translate3d(-120vw, ${drag.y}px, 0) rotate(-28deg)`;
+    else if (isTop)               transform = `translate3d(${drag.x}px, ${drag.y}px, 0) rotate(${drag.rot}deg)`;
+    else                          transform = `translate3d(0, ${stackOffset}px, 0) scale(${stackScale})`;
+
+    const likeOpacity = isTop ? Math.max(0, Math.min(1,  drag.x / 120)) : 0;
+    const nopeOpacity = isTop ? Math.max(0, Math.min(1, -drag.x / 120)) : 0;
+
+    return (
+      <div
+        className={`card ${grabbing ? "grabbing" : ""}`}
+        style={{
+          transform,
+          transition: grabbing ? "none" : "transform 0.45s cubic-bezier(.2,.7,.2,1)",
+          zIndex: total - index,
+          opacity: stackOpacity,
+        }}
+        onMouseDown={handleStart}
+        onMouseMove={grabbing ? handleMove : undefined}
+        onMouseUp={handleEnd}
+        onMouseLeave={grabbing ? handleEnd : undefined}
+        onTouchStart={handleStart}
+        onTouchMove={handleMove}
+        onTouchEnd={handleEnd}
+      >
+        <div className="card-bg">
+          {!imgFailed && (
+            <img
+              src={photo.src}
+              alt={photo.caption}
+              draggable="false"
+              onError={() => setImgFailed(true)}
+            />
+          )}
+          {imgFailed && (
+            <div className="photo-err">
+              <span>photo {String(index + 1).padStart(2, "0")}</span>
+            </div>
+          )}
+        </div>
+        <div className="card-caption">
+          <div className="num">No. {String(index + 1).padStart(2, "0")} of {String(total).padStart(2, "0")}</div>
+          <div className="text serif">{photo.caption}</div>
+        </div>
+        <div className="stamp like" style={{ opacity: likeOpacity }}>Love ♥</div>
+        <div className="stamp nope" style={{ opacity: nopeOpacity }}>Next →</div>
+      </div>
+    );
   }
 
-  function burst() {
-    const cx = canvas.width  / 2;
-    const cy = canvas.height * 0.3;
-    for (let i = 0; i < 130; i++) {
-      parts.push(mkParticle(cx + rand(-50, 50), cy));
-    }
-    if (!raf) loop();
+
+  /* ── Welcome screen ── */
+  function Welcome({ onOpen }) {
+    return (
+      <section className="section welcome">
+        <div className="rule"><span>For You</span></div>
+        <h1 className="serif">Happy <em>Birthday</em></h1>
+        <h1
+          className="serif"
+          style={{ fontStyle: "italic", color: "var(--rose-deep)", fontSize: "clamp(28px, 6vw, 44px)", marginTop: 8 }}
+        >
+          {GF_NAME}
+        </h1>
+        <p className="lede">
+          A tiny keepsake — {PHOTOS.length} of my favorite moments with you,
+          and a few words I've been trying to find for a long time.
+        </p>
+        <button className="btn" onClick={onOpen}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 21s-7.5-4.6-9.6-9.4C1 8 3 4.5 6.4 4.5c2 0 3.6 1 4.6 2.5h2c1-1.5 2.6-2.5 4.6-2.5C21 4.5 23 8 21.6 11.6 19.5 16.4 12 21 12 21z"/>
+          </svg>
+          Open Your Gift
+        </button>
+        <div className="hint">tap to begin</div>
+      </section>
+    );
   }
 
-  function loop() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    parts = parts.filter(p => p.life > 0);
-    for (const p of parts) {
-      p.x   += p.vx;
-      p.y   += p.vy;
-      p.vy  += p.gravity;
-      p.vx  *= p.drag;
-      p.rot += p.rotSpeed;
-      p.life -= p.fade;
 
-      ctx.save();
-      ctx.globalAlpha = Math.max(0, p.life);
-      ctx.translate(p.x, p.y);
-      ctx.rotate(p.rot);
-      ctx.fillStyle = p.color;
-      if (p.shape === 'rect') {
-        ctx.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2);
-      } else {
-        ctx.beginPath();
-        ctx.arc(0, 0, p.size / 2, 0, Math.PI * 2);
-        ctx.fill();
-      }
-      ctx.restore();
-    }
-    raf = parts.length ? requestAnimationFrame(loop) : null;
+  /* ── Photo deck screen ── */
+  function Deck({ onDone }) {
+    const [stack, setStack] = useState(PHOTOS.map((p, i) => ({ ...p, key: i })));
+    const total = PHOTOS.length;
+    const seen  = total - stack.length;
+
+    const handleSwipe = useCallback(() => {
+      setStack(prev => {
+        const next = prev.slice(1);
+        if (next.length === 0) setTimeout(onDone, 350);
+        return next;
+      });
+    }, [onDone]);
+
+    const trigger = (dir) => { if (window.__triggerSwipe) window.__triggerSwipe(dir); };
+
+    return (
+      <section className="section" style={{ paddingTop: 12 }}>
+        <div className="deck-header">
+          <div className="deck-counter">{String(Math.min(seen + 1, total)).padStart(2, "0")} / {String(total).padStart(2, "0")}</div>
+          <h2>Us, in moments</h2>
+        </div>
+
+        <div className="deck-stage">
+          {stack.length === 0 ? (
+            <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <span className="serif" style={{ fontSize: 28, fontStyle: "italic", color: "var(--ink-soft)" }}>and one more thing…</span>
+            </div>
+          ) : (
+            stack.slice(0, 4).map((photo, idx) => (
+              <PhotoCard
+                key={photo.key}
+                photo={photo}
+                index={photo.key}
+                total={total}
+                isTop={idx === 0}
+                offset={idx}
+                onSwipe={handleSwipe}
+              />
+            ))
+          )}
+        </div>
+
+        <div className="deck-controls">
+          <button className="control-btn" aria-label="Skip" onClick={() => trigger("left")} disabled={stack.length === 0}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M18 6 6 18M6 6l12 12"/>
+            </svg>
+          </button>
+          <button className="control-btn heart" aria-label="Love it" onClick={() => trigger("right")} disabled={stack.length === 0}>
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 21s-7.5-4.6-9.6-9.4C1 8 3 4.5 6.4 4.5c2 0 3.6 1 4.6 2.5h2c1-1.5 2.6-2.5 4.6-2.5C21 4.5 23 8 21.6 11.6 19.5 16.4 12 21 12 21z"/>
+            </svg>
+          </button>
+          <button className="control-btn" aria-label="Next" onClick={() => trigger("right")} disabled={stack.length === 0}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <path d="m9 6 6 6-6 6"/>
+            </svg>
+          </button>
+        </div>
+
+        <div className="progress-track" style={{ width: "min(360px, 80vw)" }}>
+          <div className="progress-fill" style={{ width: `${(seen / total) * 100}%` }}></div>
+        </div>
+
+        <div className="hint">swipe or use the buttons</div>
+      </section>
+    );
   }
 
-  window.addEventListener('load', () => {
-    setTimeout(burst, 350);
-    setTimeout(burst, 800);
-  });
+
+  /* ── Letter screen ── */
+  function Letter({ onRestart }) {
+    const now = new Date();
+    const dateStr = now.toLocaleDateString("en-AU", { year: "numeric", month: "long", day: "numeric" });
+    return (
+      <section className="section">
+        <div className="letter-wrap">
+          <div className="letter">
+            <div className="letter-header">
+              <div className="letter-date">A Letter · {dateStr}</div>
+              <h2 className="serif">To <em>{GF_NAME}</em></h2>
+            </div>
+            <div className="letter-body">
+              {LETTER.map((line, i) => (
+                <p key={i} className={line.className || ""} style={{ animationDelay: `${0.3 + i * 0.5}s` }}>
+                  {line.text}
+                </p>
+              ))}
+            </div>
+          </div>
+          <div style={{ display: "flex", justifyContent: "center", marginTop: 28 }}>
+            <button className="btn ghost" onClick={onRestart}>
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/>
+              </svg>
+              Start Over
+            </button>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+
+  /* ── Music toggle ── */
+  function MusicToggle() {
+    const [playing, setPlaying] = useState(false);
+    const audioRef = useRef(null);
+    if (!MUSIC_SRC) return null;
+    const toggle = () => {
+      const a = audioRef.current;
+      if (!a) return;
+      if (playing) { a.pause(); setPlaying(false); }
+      else { a.play().then(() => setPlaying(true)).catch(() => {}); }
+    };
+    return (
+      <>
+        <audio ref={audioRef} src={MUSIC_SRC} loop preload="auto" />
+        <button className={`music-toggle ${playing ? "playing" : ""}`} onClick={toggle} aria-label={playing ? "Pause" : "Play"}>
+          <span className="pulse"></span>
+          {playing
+            ? <svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
+            : <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7L8 5z"/></svg>
+          }
+        </button>
+      </>
+    );
+  }
+
+
+  /* ── Root app ── */
+  function App() {
+    const [step,  setStep]  = useState(0);
+    const [burst, setBurst] = useState(0);
+
+    const goOpen   = () => { setBurst(b => b + 1); setTimeout(() => setStep(1), 600); };
+    const goLetter = () => { setBurst(b => b + 1); setStep(2); };
+    const restart  = () => setStep(0);
+
+    return (
+      <div className="app">
+        <MusicToggle />
+        <HeartBurst trigger={burst} />
+
+        {step === 0 && <Welcome onOpen={goOpen}  />}
+        {step === 1 && <Deck    onDone={goLetter} />}
+        {step === 2 && <Letter  onRestart={restart} />}
+
+        <div className="step-dots" aria-hidden="true">
+          {[0, 1, 2].map(i => (
+            <div key={i} className={`step-dot ${i === step ? "active" : ""}`} />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  ReactDOM.createRoot(document.getElementById("root")).render(<App />);
 </script>
-
 </body>
 </html>
