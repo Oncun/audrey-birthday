@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <title>Happy Birthday Audrey! 🎉</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --pink:   #FF6B9D;
+      --purple: #C77DFF;
+      --yellow: #FFD60A;
+      --coral:  #FF6B6B;
+      --teal:   #4ECDC4;
+      --card-px: 28px; /* card horizontal padding — keep in sync with .card */
+    }
+
+    html { height: 100%; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: linear-gradient(145deg, #FFE4F0 0%, #EFE0FF 50%, #DDF4FF 100%);
+      min-height: 100dvh;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ── Canvas ── */
+    #confetti {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 100;
+    }
+
+    /* ── Page layout ── */
+    .page {
+      min-height: 100dvh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: calc(env(safe-area-inset-top, 16px) + 24px)
+               calc(env(safe-area-inset-right, 0px) + 20px)
+               calc(env(safe-area-inset-bottom, 16px) + 24px)
+               calc(env(safe-area-inset-left, 0px) + 20px);
+    }
+
+    /* ── Card ── */
+    .card {
+      background: #fff;
+      border-radius: 36px;
+      padding: 36px var(--card-px) 32px;
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+      /* overflow:hidden lets full-bleed photos clip to the card's rounded corners.
+         box-shadow renders outside the border box so it's unaffected. */
+      overflow: hidden;
+      box-shadow:
+        0 4px 6px rgba(0,0,0,0.04),
+        0 12px 40px rgba(199,125,255,0.18),
+        0 24px 60px rgba(255,107,157,0.12);
+      animation: pop-in 0.7s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
+
+    @keyframes pop-in {
+      from { opacity:0; transform:scale(0.82) translateY(24px); }
+      to   { opacity:1; transform:scale(1)    translateY(0); }
+    }
+
+    /* ── Header ── */
+    .emoji-row {
+      font-size: 2.2rem;
+      display: block;
+      margin-bottom: 14px;
+      animation: float 1.6s ease-in-out infinite alternate;
+    }
+
+    @keyframes float {
+      from { transform: translateY(0px) rotate(-2deg); }
+      to   { transform: translateY(-10px) rotate(2deg); }
+    }
+
+    .title {
+      font-family: 'Pacifico', cursive;
+      font-size: clamp(1.55rem, 6.5vw, 2rem);
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1.25;
+      margin-bottom: 2px;
+    }
+
+    .name {
+      display: block;
+      font-family: 'Pacifico', cursive;
+      font-size: clamp(2rem, 9vw, 2.8rem);
+      background: linear-gradient(135deg, var(--coral), var(--yellow));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 20px;
+    }
+
+    /* ──────────────────────────────────────────────────────────────
+       Photo carousel
+       Negative horizontal margin = full-bleed (card clips via overflow:hidden)
+    ────────────────────────────────────────────────────────────── */
+    .strip-wrap {
+      margin: 0 calc(-1 * var(--card-px)) 0;
+    }
+
+    .strip {
+      display: flex;
+      overflow-x: scroll;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch; /* momentum scroll on older iOS */
+      overscroll-behavior-x: contain;
+      scrollbar-width: none;
+    }
+    .strip::-webkit-scrollbar { display: none; }
+
+    /* Each slide is exactly as wide as the strip */
+    .slide {
+      flex: 0 0 100%;
+      scroll-snap-align: start;
+      position: relative;
+    }
+
+    .photo-box {
+      position: relative;
+      aspect-ratio: 4 / 5;
+      background: linear-gradient(135deg, #FFE4F0, #EFE0FF);
+      overflow: hidden;
+    }
+
+    .photo-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Placeholder shown when image fails to load */
+    .photo-missing {
+      display: none;
+      position: absolute;
+      inset: 0;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: linear-gradient(135deg, #FFE4F0, #EFE0FF);
+    }
+    .photo-missing .pm-icon  { font-size: 2.6rem; }
+    .photo-missing .pm-label {
+      font-size: 0.68rem;
+      font-weight: 900;
+      color: #bbb;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    /* Emoji sticker overlaid on bottom-right of each photo */
+    .sticker {
+      position: absolute;
+      bottom: 14px;
+      right: 16px;
+      font-size: 2rem;
+      pointer-events: none;
+      filter: drop-shadow(0 2px 6px rgba(0,0,0,0.25));
+      line-height: 1;
+    }
+
+    /* ── Dots ── */
+    .dots-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 7px;
+      padding: 14px var(--card-px) 4px;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #E6D4FF;
+      transition: background 0.25s ease, transform 0.25s ease;
+      flex-shrink: 0;
+    }
+
+    .dot.active {
+      background: var(--purple);
+      transform: scale(1.45);
+    }
+
+    /* Swipe hint text — fades out after first swipe */
+    .swipe-hint {
+      font-size: 0.68rem;
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      color: #ccc;
+      text-transform: uppercase;
+      padding: 8px 0 0;
+      transition: opacity 0.5s ease;
+    }
+
+    /* ── Message ── */
+    .message {
+      font-size: 0.97rem;
+      line-height: 1.75;
+      color: #555;
+      font-weight: 700;
+      margin: 24px 0 28px;
+    }
+
+    .message .pop { color: var(--pink); }
+
+    /* ── Confetti button ── */
+    .burst-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      padding: 15px 30px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 1rem;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 6px 22px rgba(199,125,255,0.45);
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
+      user-select: none;
+    }
+
+    .burst-btn:active {
+      transform: scale(0.93);
+      box-shadow: 0 3px 10px rgba(199,125,255,0.3);
+    }
+
+    /* ── Footer ── */
+    .footer-emojis {
+      margin-top: 22px;
+      font-size: 1.35rem;
+      letter-spacing: 0.18em;
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="confetti"></canvas>
+
+<div class="page">
+  <div class="card">
+
+    <span class="emoji-row">🎂 🎉 🥳</span>
+    <h1 class="title">Happy Birthday</h1>
+    <span class="name">Audrey!</span>
+
+    <!-- ── Photo carousel ──────────────────────────────────────────
+         Edit PHOTOS in the <script> below to add your images.
+         Name your files photo1.jpg, photo2.jpg … and drop them
+         in the same folder as this file.
+    ─────────────────────────────────────────────────────────────── -->
+    <div class="strip-wrap">
+      <div class="strip" id="strip">
+        <!-- slides injected by JS -->
+      </div>
+      <div class="dots-row">
+        <div id="dots"></div>
+        <!-- dots injected by JS -->
+      </div>
+      <div class="swipe-hint" id="swipeHint">swipe &rsaquo;</div>
+    </div>
+
+    <!-- ── Message ────────────────────────────────────────────────
+         Rewrite anything here — it's just HTML text!
+    ─────────────────────────────────────────────────────────────── -->
+    <p class="message">
+      Today is all about you —<br>
+      the most amazing person I know. 🌟<br><br>
+      Wishing you a day full of<br>
+      <span class="pop">laughter, love &amp; cake.</span> 🍰<br><br>
+      I love you so much! ❤️
+    </p>
+
+    <!-- ontouchstart="" is needed for :active states to fire on iOS Safari -->
+    <button class="burst-btn" onclick="burst()" ontouchstart="">
+      🎊 Pop Confetti!
+    </button>
+
+    <div class="footer-emojis">🌸 🦋 💖 ✨ 🌈</div>
+
+  </div>
+</div>
+
+<script>
+  /* ── ADD YOUR PHOTOS HERE ──────────────────────────────────────
+     Put the image files in the same folder as index.html.
+     Add or remove objects — as many as you like.
+     src   = filename of the image
+     emoji = sticker shown in the bottom-right corner of the photo
+  ────────────────────────────────────────────────────────────── */
+  const PHOTOS = [
+    { src: 'FACD82AE-0EDC-4106-9078-7FB40F8A7505.JPG',           emoji: '💕' },
+    { src: '2946725C-58B9-4C16-BB75-BC1CDEA00D6D_4_5005_c.jpeg', emoji: '🌸' },
+    { src: '2B338E7F-D798-49C8-A6CC-9FF66EE1C384_4_5005_c.jpeg', emoji: '✨' },
+    { src: 'A6BEF829-3FEA-47E8-8D57-161945C04053_4_5005_c.jpeg', emoji: '💫' },
+    { src: '62DB4D9E-D9A2-4639-917F-4738606B6C94.JPG',            emoji: '🥰' },
+    { src: '4CE6361B-DA1F-4853-94DE-2A37601D021C.JPG',            emoji: '💖' },
+    { src: '09B37399-61C0-49FF-8D8D-2945BFC3DEBC.JPG',            emoji: '🌟' },
+    { src: 'BBD46CAB-7996-4083-8E55-73EAB6BA8111.JPG',            emoji: '🎀' },
+    { src: '980ADCE6-776B-41CC-B975-89C2FC4B4CE2.JPG',            emoji: '🦋' },
+    { src: '341B02D7-F9FA-42D0-861F-B5DCA92482BB.JPG',            emoji: '🎉' },
+    { src: 'IMG_2628.JPG',   emoji: '💝' },
+    { src: 'IMG_7742.jpeg',  emoji: '🌺' },
+    { src: 'IMG_7776.jpeg',  emoji: '🎊' },
+    { src: 'IMG_7778.jpeg',  emoji: '💗' },
+    { src: 'IMG_7907.jpeg',  emoji: '🌈' },
+    { src: 'IMG_9009.jpeg',  emoji: '💓' },
+    { src: 'IMG_9249.jpeg',  emoji: '🥳' },
+    { src: 'IMG_9424.jpeg',  emoji: '💞' },
+    { src: 'IMG_9448.jpeg',  emoji: '🌷' },
+  ];
+
+
+  /* ── Build carousel ─────────────────────────────────────────── */
+  const strip   = document.getElementById('strip');
+  const dotsEl  = document.getElementById('dots');
+  const hint    = document.getElementById('swipeHint');
+
+  PHOTOS.forEach((p, i) => {
+    // Slide
+    const slide = document.createElement('div');
+    slide.className = 'slide';
+
+    const box = document.createElement('div');
+    box.className = 'photo-box';
+
+    const img = document.createElement('img');
+    img.src = p.src;
+    img.alt = `Photo ${i + 1}`;
+    img.loading = i === 0 ? 'eager' : 'lazy';
+    img.onerror = () => {
+      img.style.display = 'none';
+      missing.style.display = 'flex';
+    };
+
+    const missing = document.createElement('div');
+    missing.className = 'photo-missing';
+    missing.innerHTML = `<span class="pm-icon">📸</span><span class="pm-label">${p.src}</span>`;
+
+    const sticker = document.createElement('span');
+    sticker.className = 'sticker';
+    sticker.textContent = p.emoji;
+
+    box.append(img, missing, sticker);
+    slide.append(box);
+    strip.append(slide);
+
+    // Dot
+    const dot = document.createElement('span');
+    dot.className = 'dot' + (i === 0 ? ' active' : '');
+    dotsEl.append(dot);
+  });
+
+  const dots = dotsEl.querySelectorAll('.dot');
+
+  // Update active dot on scroll
+  strip.addEventListener('scroll', () => {
+    const idx = Math.round(strip.scrollLeft / strip.clientWidth);
+    dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+  }, { passive: true });
+
+  // Hide swipe hint after first swipe
+  strip.addEventListener('scroll', () => {
+    hint.style.opacity = '0';
+  }, { once: true, passive: true });
+
+  // Nudge animation: peek right then snap back to hint there's more
+  if (PHOTOS.length > 1) {
+    setTimeout(() => {
+      strip.scrollTo({ left: 48, behavior: 'smooth' });
+      setTimeout(() => strip.scrollTo({ left: 0, behavior: 'smooth' }), 500);
+    }, 1100); // after card entrance animation
+  }
+
+
+  /* ── Confetti engine ─────────────────────────────────────────── */
+  const canvas = document.getElementById('confetti');
+  const ctx    = canvas.getContext('2d');
+  let   parts  = [];
+  let   raf    = null;
+
+  const COLORS = [
+    '#FF6B9D','#C77DFF','#FFD60A',
+    '#FF6B6B','#4ECDC4','#FF9F43','#A29BFE',
+  ];
+
+  function resize() {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  function rand(lo, hi) { return lo + Math.random() * (hi - lo); }
+
+  function mkParticle(x, y) {
+    return {
+      x, y,
+      vx:       rand(-5, 5),
+      vy:       rand(-14, -5),
+      size:     rand(7, 13),
+      color:    COLORS[Math.floor(Math.random() * COLORS.length)],
+      shape:    Math.random() > 0.45 ? 'rect' : 'circle',
+      rot:      rand(0, Math.PI * 2),
+      rotSpeed: rand(-0.18, 0.18),
+      gravity:  0.38,
+      drag:     0.98,
+      life:     1,
+      fade:     rand(0.012, 0.022),
+    };
+  }
+
+  function burst() {
+    const cx = canvas.width  / 2;
+    const cy = canvas.height * 0.3;
+    for (let i = 0; i < 130; i++) {
+      parts.push(mkParticle(cx + rand(-50, 50), cy));
+    }
+    if (!raf) loop();
+  }
+
+  function loop() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    parts = parts.filter(p => p.life > 0);
+    for (const p of parts) {
+      p.x   += p.vx;
+      p.y   += p.vy;
+      p.vy  += p.gravity;
+      p.vx  *= p.drag;
+      p.rot += p.rotSpeed;
+      p.life -= p.fade;
+
+      ctx.save();
+      ctx.globalAlpha = Math.max(0, p.life);
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot);
+      ctx.fillStyle = p.color;
+      if (p.shape === 'rect') {
+        ctx.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2);
+      } else {
+        ctx.beginPath();
+        ctx.arc(0, 0, p.size / 2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+    }
+    raf = parts.length ? requestAnimationFrame(loop) : null;
+  }
+
+  window.addEventListener('load', () => {
+    setTimeout(burst, 350);
+    setTimeout(burst, 800);
+  });
+</script>
+
+</body>
+</html>
